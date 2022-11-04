@@ -11,7 +11,7 @@ Estimated time:
 
 Technologies:
 
-- Kuzzle Backend  ✔️✔️
+- Kuzzle Backend  ✔️
 - Kuzzle JS SDK ✔️
 - Vue.js ✔️
 - Typescript
