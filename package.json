@@ -8,7 +8,14 @@
   },
   "dependencies": {
     "core-js": "^3.8.3",
-    "vue": "^3.2.13"
+    "kuzzle-sdk": "^7.10.3",
+    "mapbox-gl": "^2.10.0",
+    "vue": "^3.2.13",
+    "vue-easy-spinner": "^0.1.0",
+    "vue-mapbox": "^0.4.1",
+    "vue-mapbox-ts": "^0.9.3",
+    "vue-spinner": "^1.0.4",
+    "vue3-loading-overlay": "0.0.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~5.0.0",
