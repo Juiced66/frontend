@@ -1,19 +1,18 @@
 <template>
-  <div class="app-header">
-    <h1>Kuzzle Interactive POI (Point of Interests) Map</h1>
-  </div>
-  <div class="instructions">
-    <h2>Instructions : </h2>
-    <ul>
-      <li>Click on map to add a Point of Interest</li>
-      <li>Click on Point of interest to delete it</li>
-    </ul>
-  </div>
   <div class="container">
+    <h1>Kuzzle Interactive POI (Point of Interests) Map</h1>
+    <div class="instructions">
+      <h2>Instructions : </h2>
+      <ul>
+        <li>Click on map to add a Point of Interest</li>
+        <li>Click on Point of interest to delete it</li>
+      </ul>
+    </div>
     <div class="loader" v-if="loading">
       <PulseLoader />
     </div>
-    <MapComponent :markers="points" @delete-point="_id => deletePoint(_id)" @send-point="point => sendPoint(point)" @loaded="loading = false" />
+    <MapComponent :markers="points" @delete-point="_id => deletePoint(_id)" @send-point="point => sendPoint(point)"
+      @loaded="loading = false" />
   </div>
 
 </template>
@@ -31,7 +30,7 @@ export default {
   },
   data() {
     return {
-      points : [],
+      points: [],
       loading: true,
       popup: null,
       subId: "",
@@ -64,7 +63,6 @@ export default {
         { sort: ["_kuzzle_info.createdAt"] },
         { size: 100 }
       );
-      // Add each message to our array
       results.hits.map(hit => {
         this.points = [this.getPoint(hit), ...this.points];
       });
@@ -78,14 +76,14 @@ export default {
           name: point.name,
         }
       );
-      this.points= [
-      {
-                geoPoint: [point.geoPoint[0], point.geoPoint[1]],
-                name: point.name,
-                _id: document.result._id
-      },
-      ...this.points
-    ];
+      this.points = [
+        {
+          geoPoint: [point.geoPoint[0], point.geoPoint[1]],
+          name: point.name,
+          _id: document._id
+        },
+        ...this.points
+      ];
     },
     async deletePoint(_id) {
       try {
@@ -93,9 +91,9 @@ export default {
         if (id === _id) {
           console.log('Success');
         }
-        for (const [i, point] of this.points.entries()){
-          if(point._id === _id){
-            this.points.splice(i, 1)
+        for (const [i, point] of this.points.entries()) {
+          if (point._id === _id) {
+            this.points.splice(i, 1);
           }
         }
       } catch (error) {
@@ -109,24 +107,25 @@ export default {
         {},
         notification => {
           if (notification.type !== "document") return;
-          if (notification.action !== "create") return;
-          this.points = [
-            this.getPoint(notification.result),
-            ...this.points
-          ];
+          if (!["create", "delete"].includes(notification.action)) return;
+          if (notification.action === "create") {
+            this.points = [
+              this.getPoint(notification.result),
+              ...this.points
+            ];
+          }
         }
       );
     },
   },
   mounted() {
-    this.valid()
+    this.valid();
   }
 };
 </script>
 
 <style scoped>
-.container,
-.app-header {
+.container {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -135,5 +134,8 @@ export default {
   height: 100%;
   width: 90%;
   margin: 0 auto;
+}
+.instructions {
+  align-self: flex-start;
 }
 </style>
