@@ -1,5 +1,5 @@
 <template>
-    <mapbox-marker @click="$emit('delete', $event)" :lngLat="lngLat" :color="color" />
+    <mapbox-marker @click="$emit('updateStatus', $event)" :lngLat="lngLat" :color="color" />
 </template>
 
 <script>

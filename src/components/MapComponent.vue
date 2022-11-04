@@ -10,9 +10,9 @@
     >
         <MapMarkerComponent
             v-for="point in markers" :key="point._id" 
-            @delete="event => deleteMarker(event, point._id)" 
+            @update-status="event => updateStatus(event, point._id)" 
             :lngLat="point.geoPoint" 
-            :color="markerColor"
+            :color="getColor(point.status)"
         />
         <MapModal 
             v-if="popup"
@@ -44,9 +44,6 @@ export default {
             modalShowAddPoint: false,
             loading: true,
             popup: null,
-            // TODO : handle multiples colors
-            //availableColors : [],
-            markerColor : 'red',
         };
     },
     methods: {
@@ -54,8 +51,18 @@ export default {
             this.popup = null;
         },
         handleAddPoint(name) {
-            this.$emit('sendPoint',{name : name, geoPoint: [this.popup.lng, this.popup.lat]})
+            this.$emit('sendPoint',{name : name, geoPoint: [this.popup.lng, this.popup.lat], status: 'created'})
             this.handlePopupClose(); 
+        },
+        getColor(status){
+            switch (status){
+                case 'created' :
+                    return 'yellow'
+                case 'visited':
+                    return 'green'
+                default : 
+                    return 'yellow'
+            }
         },
         async handleClick(e) {
             if (this.popup) {
@@ -63,11 +70,11 @@ export default {
             }
             this.popup = { lng: e.lngLat.lng, lat: e.lngLat.lat, name: '' };
         },
-        deleteMarker(event, _id) {
+        updateStatus(event, _id) {
             event.stopPropagation();
             for (const point of this.markers) {
                 if (point._id === _id) {
-                    this.$emit('deletePoint', point._id)
+                    this.$emit('updateStatus', _id)
                     break
                 }
             }

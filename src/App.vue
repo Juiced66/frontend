@@ -11,7 +11,10 @@
     <div class="loader" v-if="loading">
       <PulseLoader />
     </div>
-    <MapComponent :markers="points" @delete-point="_id => deletePoint(_id)" @send-point="point => sendPoint(point)"
+    <MapComponent 
+      :markers="points" 
+      @send-point="point => sendPoint(point)"
+      @update-status="_id => updateStatus(_id)"
       @loaded="loading = false" />
   </div>
 
@@ -52,7 +55,8 @@ export default {
       const point = {
         _id: document._id,
         geoPoint: document._source.geo_point,
-        name: document._source.name
+        name: document._source.name,
+        status: document._source.status
       };
       return point;
     },
@@ -74,13 +78,15 @@ export default {
         {
           geo_point: [point.geoPoint[0], point.geoPoint[1]],
           name: point.name,
+          status: point.status
         }
       );
       this.points = [
         {
           geoPoint: [point.geoPoint[0], point.geoPoint[1]],
           name: point.name,
-          _id: document._id
+          _id: document._id,
+          status : 'created'
         },
         ...this.points
       ];
@@ -100,6 +106,38 @@ export default {
         console.error(error.message);
       }
     },
+    async updatePoint(p) {
+      try {
+        const document = await kuzzle.document.update('map-interactions', 'points-of-interest', p._id, {
+          name: p.name,
+          geo_point: p.geo_point,
+          status: 'visited'
+        });
+        for (const [i, point] of this.points.entries()) {
+          if (point._id === p._id) {
+            this.points[i] = {
+              ...point,
+              status: 'visited'
+            };
+          }
+        }
+      } catch (error) {
+        console.error(error.message);
+      }
+    },
+    async updateStatus(_id){
+      for (const [i, point] of this.points.entries()) {
+          if (point._id === _id) {
+            switch(point.status){
+              case 'created': 
+                return this.updatePoint(point);
+              case 'visited': 
+                return this.deletePoint(_id)
+              default : return
+            }
+          }
+        }
+    },
     async subscribePoints() {
       this.subId = await kuzzle.realtime.subscribe(
         "map-interactions",
@@ -107,12 +145,25 @@ export default {
         {},
         notification => {
           if (notification.type !== "document") return;
-          if (!["create", "delete"].includes(notification.action)) return;
+          if (!["create", "delete", "update"].includes(notification.action)) return;
           if (notification.action === "create") {
             this.points = [
               this.getPoint(notification.result),
               ...this.points
             ];
+          } else if(notification.action === "update"){
+            for (const [i, point] of this.points.entries()) {
+              if (point._id === this.getPoint(notification.result)._id) {
+                this.points[i].status = 'visited';
+              }
+            }
+          }
+          else {
+            for (const [i, point] of this.points.entries()) {
+              if (point._id === this.getPoint(notification.result)._id) {
+                this.points.splice(i, 1);
+              }
+            }
           }
         }
       );
