@@ -57,9 +57,9 @@ export default {
             this.$emit('sendPoint',{name : name, geoPoint: [this.popup.lng, this.popup.lat]})
             this.handlePopupClose(); 
         },
-        handleClick(e) {
+        async handleClick(e) {
             if (this.popup) {
-                this.handlePopupClose()
+                await this.handlePopupClose()
             }
             this.popup = { lng: e.lngLat.lng, lat: e.lngLat.lat, name: '' };
         },

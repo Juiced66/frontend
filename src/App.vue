@@ -126,6 +126,7 @@ export default {
 
 <style scoped>
 .container {
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -133,9 +134,17 @@ export default {
   align-content: center;
   height: 100%;
   width: 90%;
-  margin: 0 auto;
+  margin: 0 auto
 }
 .instructions {
   align-self: flex-start;
 }
+</style>
+<style>
+  body {
+    background:linear-gradient( to bottom, #bcc6cc, #eee, #bcc6cc);
+    min-height: 100vh;
+    min-width: 100vw;
+    overflow: hidden;
+  }
 </style>
