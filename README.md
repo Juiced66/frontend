@@ -53,6 +53,8 @@ _It's up to you to look deep into the documentation_
 - [Javascript SDK](https://docs.kuzzle.io/sdk/js/7/)
 - [Vue Leaflet (Map)](https://github.com/vue-leaflet/vue-leaflet)
 
+## Capture
+![Capture](https://user-images.githubusercontent.com/80784430/199967687-18b30a3f-c9b4-4295-a733-3421fd202bb5.PNG)
 
 ## Project setup
 ```
