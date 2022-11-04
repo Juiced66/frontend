@@ -4,8 +4,10 @@
     <div class="instructions">
       <h2>Instructions : </h2>
       <ul>
-        <li>Click on map to add a Point of Interest</li>
-        <li>Click on Point of interest to delete it</li>
+        <li>Click on map to add a Point of Interest you wanna visit (yellow)</li>
+        <li>Click Point of Interest you have visited to change his color (green)</li>
+        <li>Click click again to delete it</li>
+        <!-- True to say that at this point, everybody freely can interact with everyone's point of interest !.. -->
       </ul>
     </div>
     <div class="loader" v-if="loading">
@@ -132,8 +134,8 @@ export default {
               case 'created': 
                 return this.updatePoint(point);
               case 'visited': 
-                return this.deletePoint(_id)
-              default : return
+                return this.deletePoint(_id);
+              default : return;
             }
           }
         }
@@ -194,6 +196,7 @@ export default {
 <style>
   body {
     background:linear-gradient( to bottom, #bcc6cc, #eee, #bcc6cc);
+    font-family: sans-serif;
     min-height: 100vh;
     min-width: 100vw;
     overflow: hidden;

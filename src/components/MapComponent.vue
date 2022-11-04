@@ -3,7 +3,7 @@
         :class="{ displayNone: loading, center: !loading }" class="map" 
         :auto-resize="true" 
         height="400px" width="100%"
-        accessToken="pk.eyJ1IjoianVpY2VkIiwiYSI6ImNsYTBwdGdkMzByZDgzeWx0cHBvY3JocWYifQ.P2VZk8UGbSdXYyMEb5SiMg"
+        :accessToken="process.env.MAPBOX_TOKEN"
         :center="[3.900841959551621, 43.60123651620898]" :zoom="11" :flyToOptions="{ maxDuration: 2000, speed: 1.2 }"
         @loaded="$emit('loaded')"
         @click="handleClick"
