@@ -4,7 +4,6 @@
         <input 
             type="text"
             v-model="input" 
-            :keydown.enter="canValidate ? $emit('add-point') : null"
             placeholder="Entrez un nom svp"
         >
         <div 

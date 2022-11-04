@@ -9,8 +9,8 @@
         @click="handleClick"
     >
         <MapMarkerComponent
-            v-for="point in markers" :key="point.name" 
-            @delete="event => deleteMarker(event, point.name)" 
+            v-for="point in markers" :key="point._id" 
+            @delete="event => deleteMarker(event, point._id)" 
             :lngLat="point.geoPoint" 
             :color="markerColor"
         />
@@ -18,7 +18,7 @@
             v-if="popup"
             :lngLat="[popup.lng, popup.lat]"
             @close="handlePopupClose" 
-            @add-point="name => handleAddPoint(name) "
+            @add-point="name => handleAddPoint(name)"
         />
     </MapboxMap>
 </template>
@@ -35,9 +35,12 @@ export default {
         MapMarkerComponent,
         MapModal
     },
+    props : {
+        markers : Array,
+        default : [],
+    },
     data() {
         return {
-            markers: [],
             modalShowAddPoint: false,
             loading: true,
             popup: null,
@@ -51,10 +54,7 @@ export default {
             this.popup = null;
         },
         handleAddPoint(name) {
-            this.markers.push({
-                geoPoint: [this.popup.lng, this.popup.lat],
-                name: name
-            });
+            this.$emit('sendPoint',{name : name, geoPoint: [this.popup.lng, this.popup.lat]})
             this.handlePopupClose(); 
         },
         handleClick(e) {
@@ -63,12 +63,12 @@ export default {
             }
             this.popup = { lng: e.lngLat.lng, lat: e.lngLat.lat, name: '' };
         },
-        deleteMarker(event, name) {
+        deleteMarker(event, _id) {
             event.stopPropagation();
-            for (const [index, point] of this.markers.entries()) {
-                if (point.name === name) {
-                    this.markers.splice(index, 1);
-                    break;
+            for (const point of this.markers) {
+                if (point._id === _id) {
+                    this.$emit('deletePoint', point._id)
+                    break
                 }
             }
         },
